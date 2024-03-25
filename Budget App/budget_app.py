@@ -43,17 +43,75 @@ class Category:
         return False
     
     def check_funds(self, amount):
-        return amount < self.get_balance()
-             
+        if amount <= self.get_balance():
+            return True
+        return False
 
 def create_spend_chart(*categories):
     
-    start = "Percentage spent by category:"
+    start = "Percentage spent by category"
     
-    for categ in categories:
-        pass
+    categ_spent = {}
+    #categ_deposit = {}
     
-    print(start)
+    for  categ in categories:
+        spent_money = 0
+        #tot_deposit_money = 0
+        
+        for item in categ.ledger:
+            if item['amount'] < 0:
+                spent_money += abs(item['amount'])
+            continue
+            # else:
+            #     tot_deposit_money += item['amount']
+        
+        categ_spent[categ.name] = spent_money
+        #categ_deposit[categ.name] = tot_deposit_money
+    
+    #print(categ_spent)
+    # print(categ_spent.values())
+    #print(categ_deposit)
+    
+    # print(list(categ_spent.values()))
+    
+    total_spent_all = sum(list(categ_spent.values()))
+    # print(total_spent_all) 
+    
+    spent_percent = {key: int((val/total_spent_all) * 100) for key, val in categ_spent.items()}
+    rounded_percent = {key: val//10 * 10 for key,val in spent_percent.items()}
+    
+    for i in range(100, -10, -10):
+        start += f"\n{i:>3}|"
+        #print(f"{i:>3}|")
+
+        for val in rounded_percent.values():
+            if i <= val:
+                start += ' o '
+            else:
+                start += '   '
+        
+    start += f"\n    {'-' * (len(rounded_percent) * 3 + 1)}"        
+    
+    #print(max(list(rounded_percent.keys()), key = len))
+    
+    max_row_len = len(max(list(rounded_percent.keys()), key = len))
+    # print(max_row_len)
+    
+    for row_sec_half in range(max_row_len):
+        start += "\n    "
+        
+        for i in range(len(rounded_percent)):
+            if row_sec_half < len(list(rounded_percent.keys())[i]):
+                start += f" {list(rounded_percent.keys())[i][row_sec_half]} "
+            else:
+                start += "   "
+        
+    start += '\n'   
+        
+    # print(spent_percent)
+    # print(rounded_percent)
+    
+    return start
     
 
 
@@ -62,14 +120,22 @@ food.deposit(1000, "deposit")
 food.withdraw(10.15, "groceries")
 food.withdraw(15.89, "restaurant and more food for dessert")
 # food.deposit(2, 'test deposit')
-food.get_balance()
-food.check_funds(50)
+# food.get_balance()
+# food.check_funds(50)
 clothing = Category("Clothing")
 food.transfer(50, clothing)
 clothing.deposit(300, 'Paycheck came in')
 clothing.withdraw(65, 'Nike Sweats')
 clothing.transfer(30, food)
+# auto = Category("Auto")
+# auto.deposit(100, "deposit")
+# clothing.transfer(50, auto)
+# auto.withdraw(70, 'car spray')
+
+
+
 print(food)
 print(clothing)
+# print(auto)
 
-create_spend_chart(food, clothing)
+print(create_spend_chart(food, clothing)) #, auto
