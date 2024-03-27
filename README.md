@@ -7,5 +7,5 @@ Free code camps Scientific Computing with Python course projects in this reposit
 2. Arithmetic Formatter
 3. Budget App
 4. Polygon Area Calculator
-5. Probability Calculator (in progress)
+5. Probability Calculator 
    
